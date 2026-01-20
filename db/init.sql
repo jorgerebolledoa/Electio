@@ -61,7 +61,7 @@ CREATE TABLE electivo (
 
 INSERT INTO electivo VALUES
 ('INF-401', 1, 'Introducción a la IA', 'Conceptos básicos de IA', NULL, 30, 30, 'Dr. Carlos Muñoz', false),
-('INF-402', 1, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false);
+('INF-402', 1, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false),
 ('INF-403', 2, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false);
 
 -- =========================
