@@ -1,0 +1,38 @@
+
+services:
+  db:
+    image: postgres:16
+    container_name: electio_db
+    environment:
+      POSTGRES_DB: electio
+      POSTGRES_USER: electio_user
+      POSTGRES_PASSWORD: electio_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: electio_backend
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: electio
+      DB_USER: electio_user
+      DB_PASSWORD: electio_pass
+    depends_on:
+      - db
+
+  frontend:
+    build: ./frontend
+    container_name: electio_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
