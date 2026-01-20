@@ -68,7 +68,7 @@ INSERT INTO electivo VALUES
 -- =========================
 CREATE TABLE bloque_horario (
   blo_id INT PRIMARY KEY,
-  blo_dia VARCHAR(8),
+  blo_dia VARCHAR(12),
   blo_hora_i TIME,
   blo_hora_t TIME
 );
