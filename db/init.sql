@@ -132,13 +132,3 @@ CREATE TABLE electivo_horario (
   FOREIGN KEY (ele_cod) REFERENCES electivo(ele_cod),
   FOREIGN KEY (blo_id) REFERENCES bloque_horario(blo_id)
 );
-
-CREATE TABLE estado (
-  est_id INT PRIMARY KEY,
-  est VARCHAR(20) NOT NULL
-);
-
-INSERT INTO estado (est_id, est) VALUES
-(1, 'Pendiente'),
-(2, 'Aceptada'),
-(3, 'Rechazada');
