@@ -79,7 +79,7 @@ INSERT INTO bloque_horario VALUES
 (2, 'Miércoles', '10:15', '11:45');
 
 -- =========================
--- ESTADO POSTULACION
+-- ESTADO 
 -- =========================
 CREATE TABLE estado (
   est_id INT PRIMARY KEY,
