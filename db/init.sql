@@ -61,14 +61,15 @@ CREATE TABLE electivo (
 
 INSERT INTO electivo VALUES
 ('INF-401', 1, 'Introducción a la IA', 'Conceptos básicos de IA', NULL, 30, 30, 'Dr. Carlos Muñoz', false),
-('INF-402', 1, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false);
+('INF-402', 1, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false),
+('INF-403', 2, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false);
 
 -- =========================
 -- BLOQUE HORARIO
 -- =========================
 CREATE TABLE bloque_horario (
   blo_id INT PRIMARY KEY,
-  blo_dia VARCHAR(8),
+  blo_dia VARCHAR(12),
   blo_hora_i TIME,
   blo_hora_t TIME
 );
