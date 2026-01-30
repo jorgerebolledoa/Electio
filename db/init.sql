@@ -79,7 +79,7 @@ INSERT INTO bloque_horario VALUES
 (2, 'Miércoles', '10:15', '11:45');
 
 -- =========================
--- ESTADO POSTULACION
+-- ESTADO 
 -- =========================
 CREATE TABLE estado (
   est_id INT PRIMARY KEY,
@@ -133,12 +133,6 @@ CREATE TABLE electivo_horario (
   FOREIGN KEY (blo_id) REFERENCES bloque_horario(blo_id)
 );
 
-CREATE TABLE estado (
-  est_id INT PRIMARY KEY,
-  est VARCHAR(20) NOT NULL
-);
-
-INSERT INTO estado (est_id, est) VALUES
-(1, 'Pendiente'),
-(2, 'Aceptada'),
-(3, 'Rechazada');
+INSERT INTO electivo_horario VALUES
+('INF-401', 1),
+('INF-402', 2);
