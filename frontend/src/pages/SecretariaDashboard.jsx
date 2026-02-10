@@ -12,7 +12,7 @@ const SecretariaDashboard = () => {
   return (
     <div>
       {/* Navbar de Secretaría */}
-      <Navbar usuarioNombre="Secretaría" />
+      <Navbar tipo="privado" />
 
       <div className="main-container">
         

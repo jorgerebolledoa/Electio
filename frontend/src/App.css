@@ -158,6 +158,7 @@ body {
   padding: 10px;
   margin-top: 5px;
   margin-bottom: 20px;
+  color: var(--text-color);
   border: 2px solid #2C3516; 
   background-color: #F0F0E0; 
   font-family: 'Montserrat', sans-serif;
@@ -171,4 +172,295 @@ body {
   font-weight: 800;    
   color: #1A1A1A;
   font-size: 0.9rem;
+}
+
+/* --- ESTILOS DE DETALLE ELECTIVO (Corregido) --- */
+
+.btn-back {
+  background: transparent;
+  border: 2px solid #2C3516; /* Borde verde para que destaque */
+  color: #2C3516;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  padding: 8px 20px;
+  border-radius: 20px; /* Redondito */
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+  background-color: #2C3516;
+  color: white;
+}
+
+/* El Layout ahora es transparente para que se vea el fondo beige */
+.detalle-layout {
+  display: flex;
+  gap: 50px;
+  /* background: white;  <-- ELIMINADO para quitar el fondo blanco */
+  padding: 20px 0; /* Menos padding lateral ya que no hay caja blanca */
+}
+
+/* --- COLUMNA IZQUIERDA --- */
+.col-left {
+  flex: 0 0 350px; /* Ancho fijo un poco más grande para la foto */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detalle-foto {
+  width: 100%;
+  height: 220px;
+  background-color: #2C3516;
+  background-image: url('https://source.unsplash.com/random/400x300?code');
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #2C3516; /* Borde verde a la foto */
+}
+
+/* --- ESTILO CAJA HORARIO (Minimalista / Líneas) --- */
+/* --- HORARIO TIPO LISTA DE BLOQUES --- */
+
+.horario-box {
+  background: transparent;
+  border: 2px solid #2C3516; /* Borde verde del recuadro */
+  padding: 0;                /* Sin padding general para que el título toque el borde si quieres, o ajústalo */
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.horario-titulo {
+  background-color: #2C3516; /* Fondo verde para el título "HORARIO" */
+  color: white;              /* Texto blanco */
+  text-align: center;
+  margin: 0;
+  padding: 8px 0;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.horario-lista {
+  padding: 10px 15px; /* Espacio interno para la lista */
+}
+
+.horario-fila {
+  display: flex;
+  justify-content: space-between; /* Día a la izq, Hora a la der */
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dashed #ccc; /* Línea punteada separadora */
+}
+
+.horario-fila:last-child {
+  border-bottom: none; /* Quitamos la línea al último elemento */
+}
+
+.horario-fila .dia {
+  font-weight: 800;
+  color: #2C3516;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.horario-fila .hora {
+  font-weight: 500;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.icon {
+  font-size: 1.2rem;
+}
+
+/* --- COLUMNA DERECHA --- */
+.col-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.curso-titulo {
+  font-size: 3rem; /* Título más grande e impactante */
+  color: #2C3516;
+  margin: 0 0 30px 0;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.seccion-titulo {
+  font-size: 1rem;
+  color: #7D8863;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.curso-descripcion {
+  font-size: 1.05rem;
+  line-height: 1.8; /* Mejor lectura */
+  color: #1A1A1A;
+  margin-bottom: 40px;
+  max-width: 90%; /* Para que no se estire demasiado el texto */
+}
+
+.profesor-box {
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+  background: rgba(125, 136, 99, 0.1); /* Fondo verde muy suave */
+  padding: 15px;
+  border-left: 4px solid #2C3516;
+  display: inline-block; /* Solo ocupa lo necesario */
+}
+
+/* --- ZONA INFERIOR (Actualizada) --- */
+.bottom-action-area {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espacio entre las cajitas y el botón */
+  border-top: 1px solid #ccc;
+  padding-top: 30px;
+}
+
+/* Estilo para cada cajita (Disponible y Total) */
+.cupo-box {
+  display: flex;
+  flex-direction: column; /* Pone el texto arriba y el número abajo */
+  align-items: center;    /* Centra el texto */
+}
+
+.cupo-label {
+  font-size: 0.75rem;     /* Letra pequeña para la etiqueta */
+  text-transform: uppercase;
+  color: #666;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.cupo-valor {
+  font-size: 2rem;        /* Número grande */
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Colores específicos */
+.cupo-valor.disponible {
+  color: #2C3516; /* Verde fuerte para lo disponible */
+}
+
+.cupo-valor.total {
+  color: #999;    /* Gris para el total */
+}
+
+.cupos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cupos-row {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Espacio entre las cajitas */
+}
+
+.cupos-main-title {
+  font-size: 1.2rem;
+  color: #2C3516;
+  margin-bottom: 10px;
+  font-weight: 800;
+}
+/* Ajuste del botón para que se empuje a la derecha */
+.btn-postular-grande {
+  margin-left: auto; /* Truco CSS: "Empújame todo lo que puedas a la derecha" */
+  /* ... resto de estilos del botón iguales ... */
+  background-color: #4A5D23;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* --- ESTILOS DEL MODAL (POPUP) --- */
+
+/* Fondo oscuro transparente */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Oscuridad al 60% */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Para que quede encima de todo */
+}
+
+/* La cajita blanca */
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px; /* Ancho máximo */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  text-align: center;
+  border: 2px solid #2C3516;
+}
+
+/* El Dropdown de Prioridad */
+.select-prioridad {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border: 2px solid #7D8863;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+}
+
+/* Botones del Modal */
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.btn-cancelar {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #999;
+  color: #555;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-confirmar {
+  flex: 1;
+  background: #2C3516;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-confirmar:hover {
+  background: #4A5D23;
 }

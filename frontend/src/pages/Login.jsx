@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar';
 import '../App.css'; 
 
 const Login = () => {
-  const [rut, setRut] = useState('1234567-1'); 
+  const [rut, setRut] = useState(''); 
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
@@ -44,7 +44,6 @@ const Login = () => {
                 type="password" 
                 className="input-box"
                 value={password}
-                placeholder="************************"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>

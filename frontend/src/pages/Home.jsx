@@ -8,9 +8,9 @@ const Home = () => {
 
   // Datos simulados (MOCK)
   const electivos = [
-    { id: 1, nombre: 'Criptografía', profesor: 'Rodrigo Abarzúa', cupos: 8, descripcion: 'Asignatura orientada al estudio de principios matemáticos y seguridad...' },
-    { id: 2, nombre: 'Geometría Computacional', profesor: 'Rodrigo Abarzúa', cupos: 2, descripcion: 'Curso centrado en el estudio de algoritmos y estructuras...' },
-    { id: 3, nombre: 'IA', profesor: 'Rodrigo Abarzúa', cupos: 0, descripcion: 'Estudio de técnicas que permiten simular comportamientos inteligentes.' },
+    { id: "INF-401", nombre: 'Criptografía', profesor: 'Rodrigo Abarzúa', cupos: 8, descripcion: 'Asignatura orientada al estudio de principios matemáticos y seguridad...' },
+    { id: "INF-402", nombre: 'Geometría Computacional', profesor: 'Rodrigo Abarzúa', cupos: 2, descripcion: 'Curso centrado en el estudio de algoritmos y estructuras...' },
+    { id: "INF-403", nombre: 'IA', profesor: 'Rodrigo Abarzúa', cupos: 0, descripcion: 'Estudio de técnicas que permiten simular comportamientos inteligentes.' },
   ];
 
   return (
@@ -29,13 +29,17 @@ const Home = () => {
 
         {/* Lista de Cursos */}
         {electivos.map((ramo) => (
-          <CourseCard 
-            key={ramo.id}
-            {...ramo} // Truco: Pasa todas las propiedades (nombre, desc, cupos) de una
-            onAction={() => navigate('/login')}
-            actionLabel="Postular"
-          />
-        ))}
+  <CourseCard 
+    key={ramo.id}
+    {...ramo}
+    // ANTES: onAction={() => navigate('/login')}
+    
+    // AHORA: Redirige al detalle usando el ID del ramo
+    onAction={() => navigate(`/curso/${ramo.id}`)}
+    
+    actionLabel="Ver Detalles" // Cambiamos el texto del botón también
+  />
+))}
 
       </div>
     </div>

@@ -4,7 +4,7 @@ import '../App.css';
 const AdminDashboard = () => {
   return (
     <div>
-      <Navbar usuarioNombre="Administrador" />
+      <Navbar tipo="privado" />
 
       <div className="main-container">
         <h1>Panel de Administración</h1>

@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import EstudianteDashboard from './pages/EstudianteDashboard';
 import SecretariaDashboard from './pages/SecretariaDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import DetalleElectivo from './pages/DetalleElectivo';
 
 function App() {
   return (
@@ -11,6 +12,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         
+        {/* NUEVA RUTA: Los dos puntos :id significan que eso cambia */}
+        <Route path="/curso/:id" element={<DetalleElectivo />} />
+
         <Route path="/login" element={<Login />} />
         
         <Route path="/estudiante" element={<EstudianteDashboard />} />
