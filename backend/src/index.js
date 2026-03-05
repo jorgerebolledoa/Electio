@@ -6,6 +6,9 @@ import secretaria from './routes/secretaria.routes.js';
 import admin from './routes/admin.routes.js';
 
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 app.use(express.json());
 
 app.use('/auth', auth);
