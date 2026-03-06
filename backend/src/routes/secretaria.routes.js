@@ -55,4 +55,35 @@ router.get('/inscritos/:electivo', requireRole([ROLES.SECRETARIA]), async (req, 
   res.json(rows);
 });
 
+router.post('/electivo', async (req,res)=>{
+
+  const {
+    cod,
+    periodo,
+    nombre,
+    descripcion,
+    img,
+    cupos_totales,
+    profesor
+  } = req.body;
+
+  await pool.query(`
+    INSERT INTO electivo
+    (
+      ele_cod,
+      ele_periodo,
+      ele_nombre,
+      ele_descripcion,
+      ele_img,
+      ele_cupos_totales,
+      ele_cupos,
+      ele_profesor
+    )
+    VALUES ($1,$2,$3,$4,$5,$6,$6,$7)
+  `,[cod,periodo,nombre,descripcion,img,cupos_totales,profesor]);
+
+  res.json({ok:true});
+});
+
+
 export default router;
