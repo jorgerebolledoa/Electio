@@ -132,7 +132,6 @@ CREATE TABLE electivo_horario (
   FOREIGN KEY (ele_cod) REFERENCES electivo(ele_cod),
   FOREIGN KEY (blo_id) REFERENCES bloque_horario(blo_id)
 );
-
 INSERT INTO electivo_horario VALUES
 ('INF-401', 1),
 ('INF-402', 2);
