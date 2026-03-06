@@ -19,9 +19,6 @@ router.get('/:periodo', async (req, res) => {
 
   res.json(rows);
 });
-router.get('/test', (req, res) => {
-  res.json({ ok: true });
-});
 
 
 export default router;
