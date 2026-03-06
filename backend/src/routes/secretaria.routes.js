@@ -55,6 +55,11 @@ router.get('/inscritos/:electivo', requireRole([ROLES.SECRETARIA]), async (req, 
   res.json(rows);
 });
 
+
+// ============================
+// ELECTIVO
+// ============================
+
 router.post('/electivo', async (req,res)=>{
 
   const {
@@ -84,6 +89,46 @@ router.post('/electivo', async (req,res)=>{
 
   res.json({ok:true});
 });
+
+
+router.put('/electivo/:cod', async (req,res)=>{
+
+  const {cod} = req.params;
+
+  const {
+    nombre,
+    descripcion,
+    cupos_totales,
+    profesor
+  } = req.body;
+
+  await pool.query(`
+    UPDATE electivo
+    SET
+    ele_nombre=$1,
+    ele_descripcion=$2,
+    ele_cupos_totales=$3,
+    ele_profesor=$4
+    WHERE ele_cod=$5
+  `,[nombre,descripcion,cupos_totales,profesor,cod]);
+
+  res.json({ok:true});
+});
+
+
+router.delete('/electivo/:cod', async (req,res)=>{
+
+  const {cod} = req.params;
+
+  await pool.query(`
+    UPDATE electivo
+    SET ele_eliminado=true
+    WHERE ele_cod=$1
+  `,[cod]);
+
+  res.json({ok:true});
+});
+
 
 
 export default router;

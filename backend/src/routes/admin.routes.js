@@ -183,7 +183,52 @@ router.delete('/electivo/:cod', async (req,res)=>{
   res.json({ok:true});
 });
 
+// ============================
+// ESTADO
+// ============================
 
+// Crear estado
+router.post('/estado', async (req,res)=>{
+
+  const {id, estado} = req.body;
+
+  await pool.query(`
+    INSERT INTO estado
+    VALUES ($1,$2)
+  `,[id,estado]);
+
+  res.json({ok:true});
+});
+
+
+// Editar estado
+router.put('/estado/:id', async (req,res)=>{
+
+  const {id} = req.params;
+  const {estado} = req.body;
+
+  await pool.query(`
+    UPDATE estado
+    SET est=$1
+    WHERE est_id=$2
+  `,[estado,id]);
+
+  res.json({ok:true});
+});
+
+
+// Eliminar estado
+router.delete('/estado/:id', async (req,res)=>{
+
+  const {id} = req.params;
+
+  await pool.query(`
+    DELETE FROM estado
+    WHERE est_id=$1
+  `,[id]);
+
+  res.json({ok:true});
+});
 
 // ============================
 // BLOQUE HORARIO
@@ -228,6 +273,52 @@ router.delete('/bloque/:id', async (req,res)=>{
   await pool.query(`
     DELETE FROM bloque_horario
     WHERE blo_id=$1
+  `,[id]);
+
+  res.json({ok:true});
+});
+// ============================
+// ROL
+// ============================
+
+// Crear rol
+router.post('/rol', async (req,res)=>{
+
+  const {id, rol} = req.body;
+
+  await pool.query(`
+    INSERT INTO rol
+    VALUES ($1,$2)
+  `,[id,rol]);
+
+  res.json({ok:true});
+});
+
+
+// Editar rol
+router.put('/rol/:id', async (req,res)=>{
+
+  const {id} = req.params;
+  const {rol} = req.body;
+
+  await pool.query(`
+    UPDATE rol
+    SET rol=$1
+    WHERE rol_id=$2
+  `,[rol,id]);
+
+  res.json({ok:true});
+});
+
+
+// Eliminar rol
+router.delete('/rol/:id', async (req,res)=>{
+
+  const {id} = req.params;
+
+  await pool.query(`
+    DELETE FROM rol
+    WHERE rol_id=$1
   `,[id]);
 
   res.json({ok:true});
