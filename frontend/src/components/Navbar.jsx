@@ -6,34 +6,44 @@ const Navbar = ({ tipo = 'publico', usuarioNombre }) => {
 
   return (
     <nav className="navbar">
-      <div style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-         <div style={{
-           background: '#2C3516', color:'white', width:'40px', height:'40px', 
-           borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', 
-           fontWeight:'bold', fontSize: '1.2rem'
-         }}>☰</div>
-         <h1 style={{ color: '#1A1A1A' }}>ELECTIO</h1> 
+      
+      
+      <div className="navbar-brand">
+         <div className="navbar-logo-circle">
+           
+           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="butt">
+             <line x1="4" y1="6" x2="20" y2="6" />   
+             <line x1="4" y1="12" x2="14" y2="12" /> 
+             <line x1="4" y1="18" x2="20" y2="18" /> 
+           </svg>
+         </div>
+         <h1 className="navbar-title-text" onClick={() => navigate('/')}>ELECTIO</h1> 
       </div>
+      
       
       {tipo === 'publico' ? (
         <button 
-          className="btn-primary" 
-          style={{ width: 'auto', padding: '10px 20px', background: '#4A5D23' }}
+          className="btn-primario" 
           onClick={() => navigate('/login')}
         >
           Iniciar Sesión
         </button>
       ) : (
-        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-            {usuarioNombre && <span style={{fontWeight: 'bold'}}>{usuarioNombre}</span>}
+        <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+            {usuarioNombre && <span style={{ fontWeight: 800, color: '#1E1E1E' }}>{usuarioNombre}</span>}
             <button 
               className="btn-logout"
-              onClick={() => navigate('/')}
+              onClick={() => {
+                sessionStorage.removeItem('rolUsuario');
+                sessionStorage.removeItem('rutUsuario');
+                navigate('/');
+              }}
             >
               Cerrar Sesión
             </button>
         </div>
       )}
+
     </nav>
   );
 };

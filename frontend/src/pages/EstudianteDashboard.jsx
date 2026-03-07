@@ -1,34 +1,94 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar'; 
-import CourseCard from '../components/CourseCard';
+import axios from 'axios';
+import Navbar from '../components/Navbar';
+import CourseCard from '../components/CourseCard'; // <-- IMPORTAMOS LA TARJETA OFICIAL
 import '../App.css';
 
 const EstudianteDashboard = () => {
+  const [electivos, setElectivos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+  
+  const [semestre, setSemestre] = useState('1'); 
   const navigate = useNavigate();
 
-  const electivos = [
-    { id: "INF-401", nombre: 'Criptografía', profesor: 'Rodrigo Abarzúa', cupos: 8, descripcion: 'Asignatura orientada al estudio de principios matemáticos y seguridad...' },
-    { id: "INF-402", nombre: 'Geometría Computacional', profesor: 'Rodrigo Abarzúa', cupos: 2, descripcion: 'Curso centrado en el estudio de algoritmos y estructuras...' },
-    { id: "INF-403", nombre: 'IA', profesor: 'Rodrigo Abarzúa', cupos: 0, descripcion: 'Estudio de técnicas que permiten simular comportamientos inteligentes.' },
-  ];
+  useEffect(() => {
+    const cargarElectivos = async () => {
+      setCargando(true);
+      setError('');
+
+      try {
+        const rol = sessionStorage.getItem('rolUsuario');
+        const configuracion = { headers: { rol: rol } };
+        
+        const respuesta = await axios.get(`http://localhost:3000/electivos/${semestre}`, configuracion);
+        
+        const listaOrdenada = respuesta.data.sort((a, b) => a.ele_cod.localeCompare(b.ele_cod));
+        
+        setElectivos(listaOrdenada);
+        setCargando(false);
+      } catch (err) {
+        console.error("Error trayendo electivos:", err);
+        setError('No se pudieron cargar los electivos. Verifica la conexión.');
+        setCargando(false);
+      }
+    };
+
+    cargarElectivos();
+  }, [semestre]);
+
+  const irAPostular = (codigo) => {
+    navigate(`/postular/${codigo}`);
+  };
 
   return (
-    <div>
-      {/* CORRECCIÓN: Agregamos tipo="privado" para que muestre "Cerrar Sesión" */}
-      <Navbar  tipo="privado" />
-
+    <div> 
+      <Navbar tipo="privado" />
+      
+      
       <div className="main-container">
-        <h2 style={{ color: '#2C3516', marginBottom: '20px' }}>Oferta Académica Disponible</h2>
         
-        {electivos.map((ramo) => (
-          <CourseCard 
-            key={ramo.id}
-            {...ramo}
-            // Navegamos al detalle avisando que somos estudiantes
-            onAction={() => navigate(`/curso/${ramo.id}`, { state: { soyEstudiante: true } })}
-            actionLabel="Postular"
-          />
-        ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
+          <button className="btn-secundario-outline" onClick={() => navigate('/mis-postulaciones')}>
+            Ver Mis Postulaciones
+          </button>
+          
+          <select 
+            className="select-semestre" 
+            value={semestre} 
+            onChange={(e) => setSemestre(e.target.value)}
+          >
+            <option value="1">Primer Semestre 2026</option>
+            <option value="2">Segundo Semestre 2026</option>
+          </select>
+        </div>
+
+        {cargando && <p className="mensaje-estado">Buscando electivos disponibles...</p>}
+        {error && <p className="mensaje-error">{error}</p>}
+
+        {!cargando && !error && (
+          <div className="electivos-lista">
+            {electivos.length === 0 ? (
+              <p className="mensaje-vacio">No hay electivos programados para este periodo.</p>
+            ) : (
+              electivos.map((electivo) => (
+                /* REEMPLAZAMOS EL HTML VIEJO POR EL COMPONENTE OFICIAL */
+                <CourseCard 
+                  key={electivo.ele_cod}
+                  id={electivo.ele_cod}
+                  nombre={electivo.ele_nombre}
+                  profesor={electivo.ele_profesor || 'Por asignar'}
+                  cupos={electivo.ele_cupos}
+                  descripcion={electivo.ele_descripcion}
+                  img={electivo.ele_img}
+                  onAction={() => irAPostular(electivo.ele_cod)}
+                  actionLabel="Postular"
+                />
+              ))
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -27,7 +27,8 @@ CREATE TABLE usuario (
 
 INSERT INTO usuario VALUES
 ('213456789', '1234', 'Juan Pérez González', 'juan.perez@usach.cl', 5, 1, false),
-('198765432', '1234', 'María López Rojas', 'maria.lopez@usach.cl', 7, 2, false);
+('198765432', '1234', 'María López Rojas', 'maria.lopez@usach.cl', 7, 2, false),
+('111111111', '1234', 'Admin User', 'admin@usach.cl', 9, 3, false);
 
 -- =========================
 -- PERIODO ACADEMICO
@@ -51,7 +52,7 @@ CREATE TABLE electivo (
   ele_periodo INT NOT NULL,
   ele_nombre VARCHAR(50) NOT NULL,
   ele_descripcion VARCHAR(100),
-  ele_img VARCHAR(100),
+  ele_img VARCHAR(500),
   ele_cupos_totales INT NOT NULL,
   ele_cupos INT NOT NULL,
   ele_profesor VARCHAR(50),
@@ -60,9 +61,10 @@ CREATE TABLE electivo (
 );
 
 INSERT INTO electivo VALUES
-('INF-401', 1, 'Introducción a la IA', 'Conceptos básicos de IA', NULL, 30, 30, 'Dr. Carlos Muñoz', false),
+('INF-401', 1, 'Introducción a la IA', 'Conceptos básicos de IA', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJ0PhqdKcgKT8HebnQOQLy8pg33xnUwtPwIw&s', 30, 30, 'Dr. Carlos Muñoz', false),
 ('INF-402', 1, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false),
-('INF-403', 2, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false);
+('INF-403', 2, 'Desarrollo Web', 'Apps web modernas', NULL, 25, 25, 'Ing. Paula Contreras', false),
+('INF-404', 1, 'Redes de Computadores', 'Fundamentos de redes', NULL, 20, 20, 'Dr. Andrés Silva', false);
 
 -- =========================
 -- BLOQUE HORARIO
@@ -134,4 +136,6 @@ CREATE TABLE electivo_horario (
 );
 INSERT INTO electivo_horario VALUES
 ('INF-401', 1),
-('INF-402', 2);
+('INF-402', 2),
+('INF-403', 2),
+('INF-404', 1);

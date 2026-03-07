@@ -1,70 +1,157 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Navbar from '../components/Navbar'; 
 import '../App.css';
 
 const SecretariaDashboard = () => {
-  const [solicitudes] = useState([
-    { rut: '19.234.567-8', nombre: 'Camila Fernández', electivo: 'Criptografía', prioridad: 1, cupo: 8, estado: 'pendiente' },
-    { rut: '20.145.332-4', nombre: 'Sebastián Muñoz', electivo: 'IA', prioridad: 2, cupo: 12, estado: 'pendiente' },
-    { rut: '21.003.778-9', nombre: 'Diego Aravena', electivo: 'IA', prioridad: 3, cupo: 12, estado: 'rechazado' },
-  ]);
+  const [solicitudes, setSolicitudes] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  
+  const navigate = useNavigate();
+
+  const cargarPostulaciones = async () => {
+    try {
+      const rol = sessionStorage.getItem('rolUsuario');
+      const configuracion = { headers: { rol: rol } };
+      
+      const respuesta = await axios.get('http://localhost:3000/secretaria/postulaciones', configuracion);
+      setSolicitudes(respuesta.data);
+      setCargando(false);
+    } catch (err) {
+      console.error("Error cargando postulaciones:", err);
+      setCargando(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarPostulaciones();
+  }, []);
+
+  const handleOperacion = async (rut, ele_cod, accion) => {
+    try {
+      const rol = sessionStorage.getItem('rolUsuario');
+      const configuracion = { headers: { rol: rol } };
+      
+      const body = {
+        rut: rut,
+        ele_cod: ele_cod,
+        accion: accion
+      };
+
+      await axios.post('http://localhost:3000/secretaria/resolver', body, configuracion);
+      cargarPostulaciones();
+    } catch (err) {
+      alert(err.response?.data?.error || 'Error al procesar la solicitud');
+    }
+  };
+
+  const pendientes = solicitudes.filter(s => s.estado === 'Pendiente' || s.estado === 'pendiente').length;
+  const totales = solicitudes.length;
 
   return (
     <div>
-      {/* Navbar de Secretaría */}
       <Navbar tipo="privado" />
 
       <div className="main-container">
-        
-        {/* Panel de Estadísticas */}
-        <div style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', alignItems: 'center', background: 'white', padding: '1rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ display: 'block', fontSize: '2rem', fontWeight: '800', color: '#2C3516' }}>6</span>
-            <span style={{ fontSize: '0.8rem', color: '#666' }}>Pendientes</span>
+        <div className="secretaria-top-header">
+          <div className="secretaria-stats">
+            <div className="stat-item">
+              <span className="stat-num stat-dark">{pendientes}</span>
+              <span className="stat-text">Postulaciones pendientes</span>
+            </div>
+            <div className="stat-line"></div>
+            <div className="stat-item">
+              <span className="stat-num stat-light">{totales}</span>
+              <span className="stat-text">Postulaciones Totales</span>
+            </div>
           </div>
-          <div style={{ width: '1px', height: '40px', background: '#ccc' }}></div>
-          <div style={{ textAlign: 'center' }}>
-            <span style={{ display: 'block', fontSize: '2rem', fontWeight: '800', color: '#888' }}>102</span>
-            <span style={{ fontSize: '0.8rem', color: '#666' }}>Totales</span>
-          </div>
-        </div>
+          <div className="secretaria-actions">
+            <button 
+              className="btn-primario" 
+              onClick={() => navigate('/secretaria/electivos')}
+              style={{ marginBottom: 0 }} 
+            >
+              Administrar Electivos
+            </button>
 
-        {/* Tabla de Gestión */}
-        <div style={{ overflowX: 'auto' }}> {/* Para que no se rompa en celular */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', background: 'white' }}>
+            <button 
+              className="btn-primario"
+              onClick={() => navigate('/secretaria/inscritos')}
+            >
+              Lista de Inscritos
+            </button>
+          </div>
+
+        </div>
+        <div className="table-responsive">
+          <table className="secretaria-table">
             <thead>
-              <tr style={{ borderBottom: '2px solid #2C3516', textAlign: 'left', color: '#2C3516' }}>
-                <th style={{ padding: '15px' }}>Rut</th>
-                <th style={{ padding: '15px' }}>Nombre</th>
-                <th style={{ padding: '15px' }}>Electivo</th>
-                <th style={{ padding: '15px', textAlign: 'center' }}>Prioridad</th>
-                <th style={{ padding: '15px' }}>Acciones</th>
+              <tr>
+                <th>Rut</th>
+                <th>Nombre</th>
+                <th>Electivo</th>
+                <th style={{ textAlign: 'center' }}>Prioridad</th>
+                <th style={{ textAlign: 'center' }}>Cupo disponible</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              {solicitudes.map((row, index) => (
-                <tr key={index} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '15px', fontWeight: 'bold' }}>{row.rut}</td>
-                  <td style={{ padding: '15px' }}>{row.nombre}</td>
-                  <td style={{ padding: '15px' }}>{row.electivo}</td>
-                  <td style={{ padding: '15px', textAlign: 'center' }}>{row.prioridad}</td>
-                  <td style={{ padding: '15px', display: 'flex', gap: '10px' }}>
-                    {row.estado === 'pendiente' ? (
-                      <>
-                        <button className="btn-primary" style={{padding: '5px 10px', fontSize: '0.8rem'}}>Aceptar</button>
-                        <button style={{padding: '5px 10px', border: '1px solid #999', background:'transparent', borderRadius:'4px', cursor:'pointer'}}>Rechazar</button>
-                      </>
-                    ) : (
-                      <span style={{ fontWeight: 'bold', color: row.estado === 'aceptado' ? 'green' : 'gray' }}>
-                        {row.estado.toUpperCase()}
-                      </span>
-                    )}
-                  </td>
+              {cargando ? (
+                <tr>
+                  <td colSpan="7" className="td-mensaje">Cargando datos...</td>
                 </tr>
-              ))}
+              ) : solicitudes.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="td-mensaje">No hay postulaciones registradas.</td>
+                </tr>
+              ) : (
+                solicitudes.map((row, index) => {
+                  const estadoMinuscula = row.estado?.toLowerCase();
+                  const esPendiente = estadoMinuscula === 'pendiente';
+                  const esAceptado = estadoMinuscula === 'aceptada' || estadoMinuscula === 'aceptado';
+                  const esRechazado = estadoMinuscula === 'rechazada' || estadoMinuscula === 'rechazado';
+
+                  return (
+                    <tr key={index}>
+                      <td style={{ fontWeight: '800' }}>{row.rut}</td>
+                      <td style={{ fontWeight: '800' }}>{row.nombre}</td>
+                      <td>{row.electivo}</td>
+                      <td style={{ textAlign: 'center', fontWeight: '800' }}>{row.prioridad}</td>
+                      <td style={{ textAlign: 'center', fontWeight: '800' }}>{row.cupos_disponibles || row.cupo}</td>
+                      <td className="td-accion-btn">
+                        {esPendiente ? (
+                          <button 
+                            className="btn-tabla-aceptar"
+                            onClick={() => handleOperacion(row.rut, row.id_electivo || row.ele_cod, 'Aceptar')}
+                          >
+                            Aceptar
+                          </button>
+                        ) : esAceptado ? (
+                          <span className="texto-estado-final">Aceptado</span>
+                        ) : null}
+                      </td>
+                      
+                      <td className="td-accion-btn">
+                        {esPendiente ? (
+                          <button 
+                            className="btn-tabla-rechazar"
+                            onClick={() => handleOperacion(row.rut, row.id_electivo || row.ele_cod, 'Rechazar')}
+                          >
+                            Rechazar
+                          </button>
+                        ) : esRechazado ? (
+                          <span className="texto-estado-final">Rechazado</span>
+                        ) : null}
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );

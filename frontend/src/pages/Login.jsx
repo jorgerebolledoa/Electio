@@ -20,8 +20,14 @@ const Login = () => {
         contrasena: password
       });
 
+      // 1. Obtenemos el rol desde el backend
       const rolDelUsuario = respuesta.data.rol;
+      
+      // 2. Lo guardamos en la memoria del navegador
+      sessionStorage.setItem('rolUsuario', rolDelUsuario);
+      sessionStorage.setItem('rutUsuario', rut);
 
+      // 3. Redirigimos según el rol
       if (rolDelUsuario === 'Estudiante') {
         navigate('/estudiante');
       } else if (rolDelUsuario === 'Secretaría') {
@@ -43,53 +49,53 @@ const Login = () => {
   return (
     <div>
       <Navbar tipo="publico" />
+      
       <div className="login-wrapper">
         <div className="login-card">
-          <h2 style={{ fontSize: '1.8rem', marginBottom: '2rem', color: '#1A1A1A' }}>
-            Bienvenido a <br /> ELECTIO
+          <h2 className="login-title">
+            Bienvenido a <br /> <span>ELECTIO</span>
           </h2>
 
           <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: '1rem' }}>
-              <label className="label-text">Rut</label>
+            <div className="form-group">
+              <label className="label-text">RUT <span style={{ fontSize: '0.85em', color: '#666' }}>(sin punto ni guión, ejemplo: 12345678K)</span></label>
               <input
                 type="text"
                 className="input-box"
                 value={rut}
                 onChange={(e) => setRut(e.target.value)}
+                placeholder="Ingrese su rut"
                 required
               />
             </div>
 
-            <div>
+            <div className="form-group">
               <label className="label-text">Contraseña</label>
               <input
                 type="password"
                 className="input-box"
                 value={password}
-                placeholder="************************"
+                placeholder="Ingrese su clave"
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
 
             {mensajeError && (
-              <p style={{ color: '#d9534f', fontSize: '0.9rem', fontWeight: 'bold', margin: '15px 0' }}>
+              <p className="mensaje-error-login">
                 {mensajeError}
               </p>
             )}
 
-            <p style={{ fontSize: '0.7rem', color: '#555', margin: '20px 0' }}>
-              Si aun no tienes cuenta contactate con el administrador o secretaria de carrera
+            <p className="login-help-text">
+              Si aún no tienes cuenta, contáctate con el administrador o secretaría de carrera.
             </p>
 
-            <button
-              type="submit"
-              className="btn-primary"
-              style={{ width: 'auto', padding: '10px 40px', background: '#4A5D23' }}
-            >
-              Iniciar Sesión
-            </button>
+            <div style={{ textAlign: 'center' }}>
+              <button type="submit" className="btn-primario login-btn">
+                Iniciar Sesión
+              </button>
+            </div>
           </form>
         </div>
       </div>

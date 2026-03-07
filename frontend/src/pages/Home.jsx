@@ -1,45 +1,134 @@
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar'; // <--- Importamos el componente
+import axios from 'axios';
+import Navbar from '../components/Navbar';
 import CourseCard from '../components/CourseCard';
 import '../App.css'; 
 
 const Home = () => {
   const navigate = useNavigate();
+  
+  const [electivos, setElectivos] = useState([]);
+  const [periodos, setPeriodos] = useState([]); // NUEVO: Estado para guardar los periodos
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState('');
+  const [semestre, setSemestre] = useState(''); // NUEVO: Inicia vacío hasta que la BD responda
 
-  // Datos simulados (MOCK)
-  const electivos = [
-    { id: "INF-401", nombre: 'Criptografía', profesor: 'Rodrigo Abarzúa', cupos: 8, descripcion: 'Asignatura orientada al estudio de principios matemáticos y seguridad...' },
-    { id: "INF-402", nombre: 'Geometría Computacional', profesor: 'Rodrigo Abarzúa', cupos: 2, descripcion: 'Curso centrado en el estudio de algoritmos y estructuras...' },
-    { id: "INF-403", nombre: 'IA', profesor: 'Rodrigo Abarzúa', cupos: 0, descripcion: 'Estudio de técnicas que permiten simular comportamientos inteligentes.' },
-  ];
+  // 1. CARGAMOS LOS PERIODOS PÚBLICOS
+  useEffect(() => {
+    const cargarPeriodos = async () => {
+      try {
+        const respuesta = await axios.get('http://localhost:3000/electivos/periodos/todos');
+        
+      
+
+       
+        const periodosCronologicos = [...respuesta.data].reverse();
+        setPeriodos(periodosCronologicos);
+        if (periodosCronologicos.length > 0) {
+          setSemestre(periodosCronologicos[0].per_id.toString());
+        }
+        
+
+      } catch (err) {
+        console.error("Error al cargar los periodos en Home:", err);
+      }
+    };
+    cargarPeriodos();
+  }, []);
+
+  // 2. CARGAMOS LOS ELECTIVOS DEL PERIODO SELECCIONADO
+  useEffect(() => {
+    const cargarCatálogo = async () => {
+      if (!semestre) return; // Evita hacer peticiones si el semestre aún no carga
+
+      setCargando(true);
+      setError('');
+      try {
+        const respuesta = await axios.get(`http://localhost:3000/electivos/${semestre}`);
+        const listaOrdenada = respuesta.data.sort((a, b) => a.ele_cod.localeCompare(b.ele_cod));
+        
+        setElectivos(listaOrdenada);
+        setCargando(false);
+      } catch (err) {
+        console.error("Error al cargar la vitrina pública:", err);
+        setError('No se pudo cargar el catálogo de electivos en este momento.');
+        setCargando(false);
+      }
+    };
+
+    cargarCatálogo();
+  }, [semestre]);
+
+  // Lógica de sesión limpia
+  const rol = sessionStorage.getItem('rolUsuario');
+  const tieneSesion = rol && rol !== 'null' && rol !== 'undefined';
+  const esEstudiante = rol === 'Estudiante';
 
   return (
     <div>
-      {/* MODO PÚBLICO: Muestra botón "Iniciar Sesión" */}
-      <Navbar tipo="publico" /> 
+      <Navbar tipo={tieneSesion ? "privado" : "publico"} /> 
 
       <div className="main-container">
         
-        {/* Dropdown Semestre */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1.5rem' }}>
-          <div style={{ background: 'white', border: '2px solid #2C3516', padding: '8px 20px', fontWeight: 'bold' }}>
-            ▼ Primer Semestre 2026
-          </div>
+       
+        <div className="filtros-container" style={{ 
+            display: 'flex', 
+            justifyContent: (tieneSesion && esEstudiante) ? 'space-between' : 'flex-end',
+            alignItems: 'center',
+            marginBottom: '2rem'
+        }}>
+          
+          
+          {tieneSesion && esEstudiante && (
+            <button 
+              className="btn-secundario-outline" 
+              onClick={() => navigate('/mis-postulaciones')}
+            >
+              Ver Mis Postulaciones
+            </button>
+          )}
+
+          
+          <select 
+            className="select-semestre"
+            value={semestre}
+            onChange={(e) => setSemestre(e.target.value)}
+          >
+            {periodos.length === 0 ? (
+              <option value="">Cargando periodos...</option>
+            ) : (
+              periodos.map(p => (
+                <option key={p.per_id} value={p.per_id}>
+                  {p.per_semestre === 1 ? 'Primer' : 'Segundo'} Semestre {p.per_ano}
+                </option>
+              ))
+            )}
+          </select>
         </div>
 
-        {/* Lista de Cursos */}
-        {electivos.map((ramo) => (
-  <CourseCard 
-    key={ramo.id}
-    {...ramo}
-    // ANTES: onAction={() => navigate('/login')}
-    
-    // AHORA: Redirige al detalle usando el ID del ramo
-    onAction={() => navigate(`/curso/${ramo.id}`)}
-    
-    actionLabel="Ver Detalles" // Cambiamos el texto del botón también
-  />
-))}
+        {cargando && <p className="mensaje-estado">Cargando catálogo de electivos...</p>}
+        {error && <p className="mensaje-error">{error}</p>}
+
+        <div className="electivos-lista">
+          {!cargando && !error && electivos.length === 0 ? (
+            <p className="mensaje-vacio">No hay electivos programados para este periodo.</p>
+          ) : (
+            !cargando && electivos.map((ramo) => (
+              <CourseCard 
+                key={ramo.ele_cod}
+                id={ramo.ele_cod}
+                nombre={ramo.ele_nombre}
+                profesor={ramo.ele_profesor || 'Por asignar'}
+                cupos={ramo.ele_cupos}
+                descripcion={ramo.ele_descripcion}
+                img={ramo.ele_img} 
+                onAction={() => navigate(`/postular/${ramo.ele_cod}`)}
+                actionLabel="Ver Detalles"
+              />
+            ))
+          )}
+        </div>
 
       </div>
     </div>

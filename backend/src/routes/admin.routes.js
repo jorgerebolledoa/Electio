@@ -8,9 +8,27 @@ const router = express.Router();
 router.use(requireRole([ROLES.ADMIN]));
 
 
+
+
 // ============================
 // USUARIO
 // ============================
+
+// Obtener todos los usuarios
+router.get('/usuario', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT usu_rut, usu_nombre, usu_email, usu_nivel, usu_rol 
+      FROM usuario 
+      WHERE usu_eliminado = false
+      ORDER BY usu_nombre ASC
+    `);
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener usuarios' });
+  }
+});
 
 // Crear usuario
 router.post('/usuario', async (req, res) => {
@@ -66,6 +84,14 @@ router.delete('/usuario/:rut', async (req,res)=>{
 // PERIODO ACADEMICO
 // ============================
 
+// GET Periodos
+router.get('/periodo', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM periodo_academico WHERE per_eliminado = false ORDER BY per_id ASC');
+    res.json(rows);
+  } catch (error) { res.status(500).json({ error: 'Error al obtener periodos' }); }
+});
+
 router.post('/periodo', async (req,res)=>{
 
   const {id, ano, semestre} = req.body;
@@ -109,83 +135,17 @@ router.delete('/periodo/:id', async (req,res)=>{
 });
 
 
-
-// ============================
-// ELECTIVO
-// ============================
-
-router.post('/electivo', async (req,res)=>{
-
-  const {
-    cod,
-    periodo,
-    nombre,
-    descripcion,
-    img,
-    cupos_totales,
-    profesor
-  } = req.body;
-
-  await pool.query(`
-    INSERT INTO electivo
-    (
-      ele_cod,
-      ele_periodo,
-      ele_nombre,
-      ele_descripcion,
-      ele_img,
-      ele_cupos_totales,
-      ele_cupos,
-      ele_profesor
-    )
-    VALUES ($1,$2,$3,$4,$5,$6,$6,$7)
-  `,[cod,periodo,nombre,descripcion,img,cupos_totales,profesor]);
-
-  res.json({ok:true});
-});
-
-
-router.put('/electivo/:cod', async (req,res)=>{
-
-  const {cod} = req.params;
-
-  const {
-    nombre,
-    descripcion,
-    cupos_totales,
-    profesor
-  } = req.body;
-
-  await pool.query(`
-    UPDATE electivo
-    SET
-    ele_nombre=$1,
-    ele_descripcion=$2,
-    ele_cupos_totales=$3,
-    ele_profesor=$4
-    WHERE ele_cod=$5
-  `,[nombre,descripcion,cupos_totales,profesor,cod]);
-
-  res.json({ok:true});
-});
-
-
-router.delete('/electivo/:cod', async (req,res)=>{
-
-  const {cod} = req.params;
-
-  await pool.query(`
-    UPDATE electivo
-    SET ele_eliminado=true
-    WHERE ele_cod=$1
-  `,[cod]);
-
-  res.json({ok:true});
-});
-
 // ============================
 // ESTADO
 // ============================
+
+// GET Estados
+router.get('/estado', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM estado ORDER BY est_id ASC');
+    res.json(rows);
+  } catch (error) { res.status(500).json({ error: 'Error al obtener estados' }); }
+});
 
 // Crear estado
 router.post('/estado', async (req,res)=>{
@@ -234,6 +194,14 @@ router.delete('/estado/:id', async (req,res)=>{
 // BLOQUE HORARIO
 // ============================
 
+// GET Bloques
+router.get('/bloque', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM bloque_horario ORDER BY blo_id ASC');
+    res.json(rows);
+  } catch (error) { res.status(500).json({ error: 'Error al obtener bloques' }); }
+});
+
 router.post('/bloque', async (req,res)=>{
 
   const {id,dia,hora_i,hora_t} = req.body;
@@ -280,6 +248,14 @@ router.delete('/bloque/:id', async (req,res)=>{
 // ============================
 // ROL
 // ============================
+
+// GET Roles
+router.get('/rol', async (req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT * FROM rol ORDER BY rol_id ASC');
+    res.json(rows);
+  } catch (error) { res.status(500).json({ error: 'Error al obtener roles' }); }
+});
 
 // Crear rol
 router.post('/rol', async (req,res)=>{
