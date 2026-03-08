@@ -5,7 +5,7 @@ import { ROLES } from '../utils/roles.js';
 
 const router = express.Router();
 
-router.post('/', requireRole([ROLES.ESTUDIANTE]), async (req, res) => {
+router.post('/postular', requireRole([ROLES.ESTUDIANTE]), async (req, res) => {
   const { rut, ele_cod, prioridad } = req.body;
 
   const existe = await pool.query(`
@@ -27,6 +27,34 @@ router.post('/', requireRole([ROLES.ESTUDIANTE]), async (req, res) => {
   `, [rut, ele_cod, prioridad]);
 
   res.json(rows[0]);
+});
+
+
+router.get('/:rut', async (req, res) => {
+  const { rut } = req.params;
+
+  try {
+    const { rows } = await pool.query(`
+      SELECT 
+        p.post_id, 
+        p.post_fecha, 
+        p.post_fecha_asignacion,
+        p.post_pref, 
+        e.ele_nombre, 
+        e.ele_cod, 
+        s.est as estado 
+      FROM postulacion p
+      JOIN electivo e ON p.post_electivo = e.ele_cod
+      JOIN estado s ON p.post_estado = s.est_id
+      WHERE p.post_usuario = $1 AND p.post_eliminado = false
+      ORDER BY p.post_pref ASC
+    `, [rut]);
+
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener las postulaciones' });
+  }
 });
 
 export default router;
