@@ -6,14 +6,19 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
   const { rut, contrasena } = req.body;
 
+  console.log("rut:", rut);
+  console.log("pass:", contrasena);
+
   const { rows } = await pool.query(`
-    SELECT r.rol
+    SELECT u.*, 
+           (SELECT rol 
+            FROM rol 
+            WHERE rol_id = u.usu_rol) AS rol
     FROM usuario u
-    JOIN rol r ON r.rol_id = u.usu_rol
     WHERE u.usu_rut = $1
-    AND u.usu_contrasena = $2
-    AND u.usu_eliminado = false
-  `, [rut, contrasena]);
+  `, [rut]);
+
+  console.log("usuario:", rows);
 
   if (rows.length === 0) {
     return res.status(401).json({ error: 'Credenciales inválidas' });
